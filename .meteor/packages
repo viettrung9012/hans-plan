@@ -25,7 +25,7 @@ mrt:cookies
 jaywon:meteor-node-uuid
 mrt:moment
 orionjs:core
-fortawesome:fontawesome
-orionjs:bootstrap
 sacha:spin
 react
+materialize:materialize
+orionjs:materialize
