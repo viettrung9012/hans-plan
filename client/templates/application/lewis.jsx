@@ -57,7 +57,7 @@ Template.Lewis.rendered = function() {
         var tableWidth = $("#timetable").width();
         var unitWidth = tableWidth / 24;
         var unitHeight = 80;
-        var items = _.clone(this.state.items, true);
+        var items = JSON.parse(JSON.stringify(this.state.items));
 
         var newItem;
 
@@ -73,8 +73,7 @@ Template.Lewis.rendered = function() {
           newItem.start = Math.round(parseFloat(left)/unitWidth);
 
           if (this.checkNotOverlap(newItem, items)) {
-            var newItems = _.clone(this.state.items, true);
-            newItems = _.map(newItems, function(item){
+            var newItems = _.map(this.state.items, function(item){
               if (item.id === newItem.id) {
                 item = newItem;
               }
