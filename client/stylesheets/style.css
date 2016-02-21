@@ -1,4 +1,8 @@
 #timetable {
+<<<<<<< 017835ee1d8e6ef01185a57922cbecdb2c541828
+=======
+    width: 0.6vw;
+>>>>>>> Basic layout
     min-width:720px;
     max-width: 1500px;
     height: 580px;
@@ -54,4 +58,21 @@
     border-right: 1px solid #ddd;
     z-index: -100;
     display: inline-block;
+}
+.trung {
+    width: 100%;
+    display: flex;
+}
+.trung-table {
+    flex: 1;
+    min-width: 720px;
+    max-width: 1280px;
+    height: 560px;
+    width: 80%;
+}
+.list-item {
+     cursor: move;
+     list-style: none;
+     border-radius: 3px;
+     background-color: #F44336;
 }
