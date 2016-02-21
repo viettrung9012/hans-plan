@@ -193,11 +193,9 @@ Template.Trung.rendered = function() {
     },
     render() {
       var width = $("#trung").width() * 0.85;
-      console.log($("#trung").width());
       if (width < 720) width = 720;
       if (width > 1280) width = 1280;
       var tableWidth = width - 20;
-      console.log(tableWidth);
       return (<div className="trung-table">
             <div className="day-axis">
                 <div className="empty-cell"></div>
@@ -262,10 +260,10 @@ Template.Trung.rendered = function() {
       }
     },
     onItemResize(itemId, left, width) {
-        var width = $("#trung").width() * 0.85;
-        if (width < 720) width = 720;
-        if (width > 1280) width = 1280;
-        var tableWidth = width - 20;
+        var viewWidth = $("#trung").width() * 0.85;
+        if (viewWidth < 720) viewWidth = 720;
+        if (viewWidth > 1280) viewWidth = 1280;
+        var tableWidth = viewWidth - 20;
         var unitWidth= tableWidth / 14;
         var unitHeight= 80;
         var items = JSON.parse(JSON.stringify(this.state.items));
