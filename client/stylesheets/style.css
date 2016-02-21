@@ -1,12 +1,17 @@
-.timetable {
-    width: 0.9 vw;
+#timetable {
+    width: 0.6 vw;
     min-width:720px;
     height: 560px;
+    position: relative;
+    background: repeating-linear-gradient(
+            #606dbc,
+            #606dbc 10px
+    );
 }
 .item-block {
     background-color: red;
     display: inline-block;
     height: 80px;
     position: absolute;
-    float:left;
+    //float:left;
 }
