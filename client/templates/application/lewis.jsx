@@ -53,8 +53,8 @@ Template.Lewis.rendered = function() {
           };
       },
       onItemDrag(itemId, top, left) {
-        var tableWidth= $("#timetable").width();
-        var unitWidth= tableWidth / 24;
+        var tableWidth= $("#timetable").width() -20;
+        var unitWidth= tableWidth / 14;
         var unitHeight= 80;
         var items = JSON.parse(JSON.stringify(this.state.items));
         var newItem;
@@ -82,8 +82,8 @@ Template.Lewis.rendered = function() {
         }
       },
       onItemResize(itemId, left, width) {
-          var tableWidth= $("#timetable").width();
-          var unitWidth= tableWidth / 24;
+          var tableWidth= $("#timetable").width() -20;
+          var unitWidth= tableWidth / 14;
           var unitHeight= 80;
           var items = JSON.parse(JSON.stringify(this.state.items));
           var newItem;
@@ -117,8 +117,8 @@ Template.Lewis.rendered = function() {
         }));
       },
       renderItems() {
-          var tableWidth= $("#timetable").width();
-          var unitWidth= tableWidth / 24;
+          var tableWidth= $("#timetable").width() - 20;
+          var unitWidth= tableWidth / 14;
           var unitHeight= 80;
 
           return this.state.items.map((item) => {
@@ -137,8 +137,57 @@ Template.Lewis.rendered = function() {
                     />;
           });
       },
+      getTableGridHorizontal() {
+          var tableWidth= $("#timetable").width() -20;
+          var unitWidth= tableWidth / 14 -2;
+          var grids = [];
+          for (var i = 0; i < 7; i++) {
+              grids.push(<div className='horizontal-box'></div>);
+          }
+          return grids;
+      },
+      getTableGridVertical() {
+          var tableWidth= $("#timetable").width() -20;
+          console.log(tableWidth);
+          var unitWidth= tableWidth / 14 -1;
+          var grids = [];
+          for (var i = 0; i < 13; i++) {
+              grids.push(<div className='vertical-box' style={{width: unitWidth}}></div>);
+          }
+          return grids;
+      },
+      getTimeAxis() {
+          var tableWidth= $("#timetable").width() -20;
+          var unitWidth= Math.floor(tableWidth / 14);
+          var unitHeight= 80;
+          var time = [];
+
+          for (var i = 0, j=800; i < 14; i++, j+=100) {
+              var timeString = (j < 1000 ? "0" : "") + j;
+              time.push(<div className="time-axis" style={{width: unitWidth}}>{timeString}</div>);
+          }
+          return time;
+      },
+      getDayAxis() {
+          var days = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
+          var daysHtml = days.map((day) => <div className="day-text">{day}</div>);
+          return daysHtml;
+      },
       render() {
-          return <div>{this.renderItems()}</div>;
+          var tableWidth= $("#timetable").width() -20;
+          return (<div>
+                <div className="day-axis">
+                    <div className="empty-cell"></div>
+                    {this.getDayAxis()}
+                </div>
+                <div className="table-right" style={{width: tableWidth}}>
+                    <div>{this.getTimeAxis()}</div>
+                    <div id="timetable-item-container">{this.renderItems()}
+                        <div id='horizontal-wrapper'>{this.getTableGridHorizontal()}</div>
+                        <div id='vertical-wrapper'>{this.getTableGridVertical()}</div>
+                    </div>
+                </div>
+            </div>);
       }
   });
 
