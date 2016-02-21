@@ -3,6 +3,7 @@ apiCall = function (method, apiUrl, options) {
     var response = HTTP.call(method, apiUrl, options).data;
     return response;
   } catch (error) {
+    console.log(error);
     var errorCode = 500,
         errorMessage = 'Cannot access the API';
     if (error.response) {
