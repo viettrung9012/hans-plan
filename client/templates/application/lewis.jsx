@@ -18,6 +18,8 @@ Template.Lewis.rendered = function() {
           this.props.onDrag(this.props.id, top, left);
       },
       handleResizeStop(event, ui) {
+          ui.element.css(ui.originalPosition);
+          ui.element.css(ui.originalSize);
           var {left, top} = ui.position;
           var {width, height} = ui.size;
           this.props.onResize(this.props.id, left, width);
