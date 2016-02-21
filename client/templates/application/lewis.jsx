@@ -5,12 +5,13 @@ Template.Lewis.rendered = function() {
             .resizable({
               handles: "e, w",
               stop: this.handleResizeStop,
+              containment: $("#timetable")
             })
             .draggable({
-              //grid: [this.props.unitWidth, 80],
               revert:true,
               revertDuration: 0,
-              stop: this.handleDragStop
+              stop: this.handleDragStop,
+              containment: $("#timetable")
             });
       },
       handleDragStop(event, ui) {
@@ -97,6 +98,7 @@ Template.Lewis.rendered = function() {
           if (newItem) {
             newItem.start = Math.round(parseFloat(left)/unitWidth);
             newItem.duration = Math.round(parseFloat(width)/unitWidth);
+            if (newItem.duration === 0) newItem.duration = 1;
             if (this.checkNotOverlap(newItem, items)) {
                 var newItems = _.map(this.state.items, function(item){
                   if (item.id === newItem.id) {
