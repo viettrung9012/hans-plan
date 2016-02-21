@@ -57,8 +57,7 @@ Template.Lewis.rendered = function() {
           };
       },
       onItemDrag(itemId, top, left) {
-        var items = _.clone(this.state.items, true);
-
+        var items = JSON.parse(JSON.stringify(this.state.items));
         var newItem;
 
         items = _.filter(items, function(item){
