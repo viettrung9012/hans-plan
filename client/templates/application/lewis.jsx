@@ -5,12 +5,13 @@ Template.Lewis.rendered = function() {
             .resizable({
               handles: "e, w",
               stop: this.handleResizeStop,
+              containment: $("#timetable")
             })
             .draggable({
-              //grid: [this.props.unitWidth, 80],
               revert:true,
               revertDuration: 0,
-              stop: this.handleDragStop
+              stop: this.handleDragStop,
+              containment: $("#timetable")
             });
       },
       handleDragStop(event, ui) {
