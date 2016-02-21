@@ -1,11 +1,25 @@
 Template.Trung.rendered = function() {
+  var width = $("#trung").width() * 0.85;
+  if (width < 720) width = 720;
+  if (width > 1280) width = 1280;
+  var tableWidth = width - 20;
+  var unitWidth = tableWidth / 14;
+  var unitHeight = 80;
   SearchBar = React.createClass({
+    handleSearch: function(e) {
+      e.preventDefault();
+      this.props.onUserInput(
+        this.refs.searchTextInput.value
+      );
+      $(e.target).find('input').val('');
+    },
     render() {
       return (
-      <form>
+      <form onSubmit={this.handleSearch}>
         <input
           type="text"
           placeholder="Search..."
+          ref="searchTextInput"
         />
       </form>
     );
@@ -15,51 +29,66 @@ Template.Trung.rendered = function() {
     componentDidMount() {
         $(ReactDOM.findDOMNode(this))
           .draggable({
-            helper: 'clone'
+            helper: 'clone',
+            start: function (e, ui) {
+                ui.helper.animate({
+                    width: unitWidth,
+                    height: 80
+                });
+            },
+            cursorAt: {left: unitWidth/2, top: 40}
           });
     },
     render() {
-      var width = $("#trung").width() * 0.85;
-      if (width < 720) width = 720;
-      if (width > 1280) width = 1280;
-      width /= 14;
       return <div
               className="list-item"
-              key={this.props.id}
-              data-id={this.props.id}
-              style={{width: width + 'px',
-                      height: '80px'}}>
-              {this.props.id}
+              key={this.props.key}
+              data-playlistid={this.props.id}
+              >
+              <img className="list-item-image" src={this.props.thumbnail}/>
+              <span>{this.props.title}</span>
             </div>;
     }
   });
   List = React.createClass({
-    renderItems() {
-        var listData = [
-          {
-            id: 'fish-1',
-            duration: 1
-          },
-          {
-            id: 'fish-2',
-            duration: 2
-          },
-          {
-            id: 'fish-3',
-            duration: 3
+    getInitialState() {
+      return {
+          items: []
+        };
+    },
+    onUserInput(searchText) {
+      var self = this;
+      serverCall('searchPlaylist', searchText)
+      .then(function(response){
+        var items = _.map(response, function(item){
+          return {
+            playlistId: item.id.playlistId,
+            title: item.snippet.title,
+            thumbnail: item.snippet.thumbnails.default.url
           }
-        ]
-        return listData.map((item) => {
+        });
+        self.setState({items: items});
+      })
+      .catch(function(error){
+        console.log(error)
+      });
+    },
+    renderItems() {
+        return this.state.items.map((item) => {
             return  <ListItem
-                      key={item.id}
-                      id={item.id}
+                      key={item.playlistId}
+                      id={item.playlistId}
+                      title={item.title}
+                      thumbnail={item.thumbnail}
                     />;
         });
     },
     render() {
       return (
         <div className="trung-list">
-          <SearchBar/>
+          <SearchBar
+              onUserInput={this.onUserInput}
+            />
           {this.renderItems()}
         </div>
       )
@@ -124,13 +153,6 @@ Template.Trung.rendered = function() {
       this.props.handleResize(itemId, left, width);
     },
     renderItems() {
-        var width = $("#trung").width() * 0.85;
-        if (width < 720) width = 720;
-        if (width > 1280) width = 1280;
-        var tableWidth= width - 20;
-        var unitWidth= tableWidth / 14;
-        var unitHeight= 80;
-
         return this.props.items.map((item) => {
             var itemWidth = unitWidth * item.duration;
             var posX = item.start * unitWidth;
@@ -148,11 +170,6 @@ Template.Trung.rendered = function() {
         });
     },
     getTableGridHorizontal() {
-        var width = $("#trung").width() * 0.85;
-        if (width < 720) width = 720;
-        if (width > 1280) width = 1280;
-        var tableWidth = width - 20;
-        var unitWidth= tableWidth / 14 -2;
         var grids = [];
         for (var i = 0; i < 7; i++) {
             grids.push(<div className='horizontal-box' key={i}></div>);
@@ -160,29 +177,20 @@ Template.Trung.rendered = function() {
         return grids;
     },
     getTableGridVertical() {
-        var width = $("#trung").width() * 0.85;
-        if (width < 720) width = 720;
-        if (width > 1280) width = 1280;
-        var tableWidth = width - 20;
-        var unitWidth= tableWidth / 14 -1;
+        var unitWidthV= tableWidth / 14 -1;
         var grids = [];
         for (var i = 0; i < 13; i++) {
-            grids.push(<div className='vertical-box' key={i} style={{width: unitWidth}}></div>);
+            grids.push(<div className='vertical-box' key={i} style={{width: unitWidthV}}></div>);
         }
         return grids;
     },
     getTimeAxis() {
-        var width = $("#trung").width() * 0.85;
-        if (width < 720) width = 720;
-        if (width > 1280) width = 1280;
-        var tableWidth = width - 20;
-        var unitWidth= Math.floor(tableWidth / 14);
-        var unitHeight= 80;
+        var unitWidthT = Math.floor(tableWidth / 14);
         var time = [];
 
         for (var i = 0, j=800; i < 14; i++, j+=100) {
             var timeString = (j < 1000 ? "0" : "") + j;
-            time.push(<div className="time-axis" key={timeString} style={{width: unitWidth}}>{timeString}</div>);
+            time.push(<div className="time-axis" key={timeString} style={{width: unitWidthT}}>{timeString}</div>);
         }
         return time;
     },
@@ -192,10 +200,6 @@ Template.Trung.rendered = function() {
         return daysHtml;
     },
     render() {
-      var width = $("#trung").width() * 0.85;
-      if (width < 720) width = 720;
-      if (width > 1280) width = 1280;
-      var tableWidth = width - 20;
       return (<div className="trung-table">
             <div className="day-axis">
                 <div className="empty-cell"></div>
@@ -228,12 +232,6 @@ Template.Trung.rendered = function() {
       };
     },
     onItemDrag(itemId, top, left) {
-      var width = $("#trung").width() * 0.85;
-      if (width < 720) width = 720;
-      if (width > 1280) width = 1280;
-      var tableWidth = width - 20;
-      var unitWidth= tableWidth / 14;
-      var unitHeight= 80;
       var items = JSON.parse(JSON.stringify(this.state.items));
       var newItem;
 
@@ -260,12 +258,6 @@ Template.Trung.rendered = function() {
       }
     },
     onItemResize(itemId, left, width) {
-        var viewWidth = $("#trung").width() * 0.85;
-        if (viewWidth < 720) viewWidth = 720;
-        if (viewWidth > 1280) viewWidth = 1280;
-        var tableWidth = viewWidth - 20;
-        var unitWidth= tableWidth / 14;
-        var unitHeight= 80;
         var items = JSON.parse(JSON.stringify(this.state.items));
         var newItem;
 
@@ -291,12 +283,6 @@ Template.Trung.rendered = function() {
         }
     },
     onItemDrop(elem, top, left) {
-        var width = $("#trung").width() * 0.85;
-        if (width < 720) width = 720;
-        if (width > 1280) width = 1280;
-        var tableWidth = width - 20;
-        var unitWidth= tableWidth / 14;
-        var unitHeight= 80;
         var items = JSON.parse(JSON.stringify(this.state.items));
         var newItem = {
           id: ShortId.generate(),
@@ -304,8 +290,10 @@ Template.Trung.rendered = function() {
           day: Math.round(parseFloat(top)/unitHeight),
           start: Math.round(parseFloat(left)/unitWidth)
         };
-        items.push(newItem);
-        this.setState({items: items});
+        if (this.checkNotOverlap(newItem, items)) {
+          items.push(newItem);
+          this.setState({items: items});
+        }
     },
     checkNotOverlap(newItem, items) {
       return !(_.some(items, function(item){
