@@ -5,6 +5,10 @@ Template.Trung.rendered = function() {
   var tableWidth = width - 20;
   var unitWidth = tableWidth / 14;
   var unitHeight = 80;
+  $("#player")
+    .dialog({
+              autoOpen: false
+            });
   SearchBar = React.createClass({
     handleSearch: function(e) {
       e.preventDefault();
@@ -28,6 +32,9 @@ Template.Trung.rendered = function() {
   ListItem = React.createClass({
     componentDidMount() {
         $(ReactDOM.findDOMNode(this))
+          .click(function(){
+            $("#player").dialog("open");
+          })
           .draggable({
             helper: 'clone',
             start: function (e, ui) {
