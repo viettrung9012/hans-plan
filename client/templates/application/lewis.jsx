@@ -2,15 +2,15 @@ Template.Lewis.rendered = function() {
   TimetableItem = React.createClass ({
       componentDidMount() {
           $(ReactDOM.findDOMNode(this))
+            .resizable({
+              handles: "e, w",
+              stop: this.handleResizeStop
+            })
             .draggable({
               //grid: [this.props.unitWidth, 80],
               revert:true,
               revertDuration: 0,
               stop: this.handleDragStop
-            })
-            .resizable({
-              handles: "e, w",
-              stop: this.handleResizeStop
             });
       },
       handleDragStop(event, ui) {

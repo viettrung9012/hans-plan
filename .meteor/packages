@@ -24,13 +24,10 @@ meteorhacks:kadira
 mrt:cookies
 jaywon:meteor-node-uuid
 mrt:moment
-orionjs:core
 sacha:spin
 react
-materialize:materialize
-orionjs:materialize
 
 react-runtime@=0.14.3
 react-runtime-dev@=0.14.3
 react-runtime-prod@=0.14.3
-mrt:jquery-ui
+mizzao:jquery-ui
