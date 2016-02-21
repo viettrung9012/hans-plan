@@ -74,9 +74,8 @@ Template.Trung.rendered = function() {
           });
     },
     handleDrop: function(event, ui) {
-      console.log(event);
-      console.log(ui);
       var pos = ui.offset, dPos = $(ReactDOM.findDOMNode(this)).offset();
+      console.log($(ui.draggable.context).data('id'));
       console.log({
         top: (pos.top - dPos.top),
         left: (pos.left - dPos.left)

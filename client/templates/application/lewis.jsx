@@ -144,17 +144,16 @@ Template.Lewis.rendered = function() {
           var unitWidth= tableWidth / 14 -2;
           var grids = [];
           for (var i = 0; i < 7; i++) {
-              grids.push(<div className='horizontal-box'></div>);
+              grids.push(<div className='horizontal-box' key={i}></div>);
           }
           return grids;
       },
       getTableGridVertical() {
           var tableWidth= $("#timetable").width() -20;
-          console.log(tableWidth);
           var unitWidth= tableWidth / 14 -1;
           var grids = [];
           for (var i = 0; i < 13; i++) {
-              grids.push(<div className='vertical-box' style={{width: unitWidth}}></div>);
+              grids.push(<div className='vertical-box' key={i} style={{width: unitWidth}}></div>);
           }
           return grids;
       },
@@ -166,13 +165,13 @@ Template.Lewis.rendered = function() {
 
           for (var i = 0, j=800; i < 14; i++, j+=100) {
               var timeString = (j < 1000 ? "0" : "") + j;
-              time.push(<div className="time-axis" style={{width: unitWidth}}>{timeString}</div>);
+              time.push(<div className="time-axis" key={timeString} style={{width: unitWidth}}>{timeString}</div>);
           }
           return time;
       },
       getDayAxis() {
           var days = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
-          var daysHtml = days.map((day) => <div className="day-text">{day}</div>);
+          var daysHtml = days.map((day) => <div className="day-text" key={day}>{day}</div>);
           return daysHtml;
       },
       render() {
