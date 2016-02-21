@@ -4,7 +4,6 @@ Template.Lewis.rendered = function() {
           $(ReactDOM.findDOMNode(this))
             .resizable({
               handles: "e, w",
-              containment: "parent",
               stop: this.handleResizeStop,
             })
             .draggable({
@@ -15,12 +14,10 @@ Template.Lewis.rendered = function() {
             });
       },
       handleDragStop(event, ui) {
-          var $node = $(ReactDOM.findDOMNode(this));
           var {top, left} = ui.position;
           this.props.onDrag(this.props.id, top, left);
       },
       handleResizeStop(event, ui) {
-          var $node = $(ReactDOM.findDOMNode(this));
           var {left, top} = ui.position;
           var {width, height} = ui.size;
           this.props.onResize(this.props.id, left, width);
@@ -38,9 +35,6 @@ Template.Lewis.rendered = function() {
       }
   });
   Timetable = React.createClass({
-      tableWidth: $("#timetable").width(),
-      unitWidth: tableWidth / 24,
-      unitHeight: 80,
       getInitialState() {
           return {
               items: [{
@@ -57,6 +51,9 @@ Template.Lewis.rendered = function() {
           };
       },
       onItemDrag(itemId, top, left) {
+        var tableWidth= $("#timetable").width();
+        var unitWidth= tableWidth / 24;
+        var unitHeight= 80;
         var items = JSON.parse(JSON.stringify(this.state.items));
         var newItem;
 
@@ -68,8 +65,8 @@ Template.Lewis.rendered = function() {
         });
 
         if (newItem) {
-          newItem.day = Math.round(parseFloat(top)/this.unitHeight);
-          newItem.start = Math.round(parseFloat(left)/this.unitWidth);
+          newItem.day = Math.round(parseFloat(top)/unitHeight);
+          newItem.start = Math.round(parseFloat(left)/unitWidth);
 
           if (this.checkNotOverlap(newItem, items)) {
             var newItems = _.map(this.state.items, function(item){
@@ -83,7 +80,12 @@ Template.Lewis.rendered = function() {
         }
       },
       onItemResize(itemId, left, width) {
+          var tableWidth= $("#timetable").width();
+          var unitWidth= tableWidth / 24;
+          var unitHeight= 80;
+          var items = JSON.parse(JSON.stringify(this.state.items));
           var newItem;
+
           items = _.filter(items, function(item){
             if (item.id === itemId) {
               newItem = item;
@@ -91,10 +93,16 @@ Template.Lewis.rendered = function() {
             return item.id !== itemId;
           });
           if (newItem) {
-            newItem.start = Math.round(parseFloat(left)/this.unitWidth);
-            newItem.duration = Math.round(parseFloat(width)/this.unitWidth);
+            newItem.start = Math.round(parseFloat(left)/unitWidth);
+            newItem.duration = Math.round(parseFloat(width)/unitWidth);
             if (this.checkNotOverlap(newItem, items)) {
-
+                var newItems = _.map(this.state.items, function(item){
+                  if (item.id === newItem.id) {
+                    item = newItem;
+                  }
+                  return item;
+                });
+                this.setState({items: newItems});
             }
           }
       },
@@ -107,10 +115,14 @@ Template.Lewis.rendered = function() {
         }));
       },
       renderItems() {
+          var tableWidth= $("#timetable").width();
+          var unitWidth= tableWidth / 24;
+          var unitHeight= 80;
+
           return this.state.items.map((item) => {
-              var itemWidth = this.unitWidth * item.duration;
-              var posX = item.start * this.unitWidth;
-              var posY = item.day * this.unitHeight;
+              var itemWidth = unitWidth * item.duration;
+              var posX = item.start * unitWidth;
+              var posY = item.day * unitHeight;
               return <TimetableItem
                       key={item.id}
                       unitWidth={unitWidth}
