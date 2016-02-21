@@ -57,14 +57,18 @@
 }
 .trung {
     width: 100%;
-    display: flex;
+}
+.trung-table, .trung-list {
+    float: left;
 }
 .trung-table {
-    flex: 1;
     min-width: 720px;
     max-width: 1280px;
-    height: 560px;
-    width: 80%;
+    height: 580px;
+    width: 85%;
+}
+.trung-list {
+    margin-left: 10px;
 }
 .list-item {
      cursor: move;
