@@ -223,20 +223,9 @@ Template.Trung.rendered = function() {
     }
   });
   Trung = React.createClass({
-    getInitialState() {
-      return {
-        items: [{
-            id: 'item-1',
-            duration: 1,
-            day: 0,
-            start: 0
-        }, {
-            id: 'item-2',
-            duration: 2,
-            day: 1,
-            start: 1
-        }]
-      };
+    mixins: [ReactMeteorData],
+    getMeteorData() {
+      return Timetables.findOne({});
     },
     /*
     componentDidMount() {
@@ -258,7 +247,7 @@ Template.Trung.rendered = function() {
     },
     */
     onItemDrag(itemId, top, left) {
-      var items = JSON.parse(JSON.stringify(this.state.items));
+      var items = JSON.parse(JSON.stringify(this.data.items));
       var newItem;
 
       items = _.filter(items, function(item){
@@ -273,18 +262,18 @@ Template.Trung.rendered = function() {
         newItem.start = Math.round(parseFloat(left)/unitWidth);
 
         if (this.checkNotOverlap(newItem, items)) {
-          var newItems = _.map(this.state.items, function(item){
+          var newItems = _.map(this.data.items, function(item){
             if (item.id === newItem.id) {
               item = newItem;
             }
             return item;
           });
-          this.setState({items: newItems});
+          Timetables.update({owner: this.data.owner}, {$set:{items: newItems}});
         }
       }
     },
     onItemResize(itemId, left, width) {
-        var items = JSON.parse(JSON.stringify(this.state.items));
+        var items = JSON.parse(JSON.stringify(this.data.items));
         var newItem;
 
         items = _.filter(items, function(item){
@@ -298,18 +287,18 @@ Template.Trung.rendered = function() {
           newItem.duration = Math.round(parseFloat(width)/unitWidth);
           if (newItem.duration === 0) newItem.duration = 1;
           if (this.checkNotOverlap(newItem, items)) {
-              var newItems = _.map(this.state.items, function(item){
+              var newItems = _.map(this.data.items, function(item){
                 if (item.id === newItem.id) {
                   item = newItem;
                 }
                 return item;
               });
-              this.setState({items: newItems});
+              Timetables.update({owner: this.data.owner}, {$set:{items: newItems}});
           }
         }
     },
     onItemDrop(elem, top, left) {
-        var items = JSON.parse(JSON.stringify(this.state.items));
+        var items = JSON.parse(JSON.stringify(this.data.items));
         var newItem = {
           id: ShortId.generate(),
           duration: 1,
@@ -318,7 +307,7 @@ Template.Trung.rendered = function() {
         };
         if (this.checkNotOverlap(newItem, items)) {
           items.push(newItem);
-          this.setState({items: items});
+          Timetables.update({owner: this.data.owner}, {$set:{items: newItems}});
         }
     },
     checkNotOverlap(newItem, items) {
@@ -336,7 +325,7 @@ Template.Trung.rendered = function() {
             handleDrop={this.onItemDrop}
             handleDrag={this.onItemDrag}
             handleResize={this.onItemResize}
-            items={this.state.items}
+            items={this.data.items}
             />
           <List/>
         </div>
