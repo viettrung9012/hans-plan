@@ -1,5 +1,5 @@
-Template.Trung.rendered = function() {
-  var width = $("#trung").width() * 0.85;
+Template.Timetable.rendered = function() {
+  var width = $("#app").width() * 0.85;
   if (width < 720) width = 720;
   if (width > 1640) width = 1640;
   var tableWidth = width - 20;
@@ -13,8 +13,8 @@ Template.Trung.rendered = function() {
 
   $("#player")
     .dialog({
-        width: 1280,
-        height: 740,
+        width: 1320,
+        height: 790,
         autoOpen: false,
         modal: true,
         open: function(event, ui) {
@@ -125,7 +125,7 @@ Template.Trung.rendered = function() {
     },
     render() {
       return (
-        <div className="trung-list">
+        <div className="app-list">
           <SearchBar
               onUserInput={this.onUserInput}
             />
@@ -138,7 +138,7 @@ Template.Trung.rendered = function() {
       componentDidMount() {
           var self = this;
           $(ReactDOM.findDOMNode(this))
-            .click(function(){
+            .dblclick(function(){
                 $("#player").dialog("open");
                 var player;
                 var playListId = self.props.playlistId;
@@ -160,13 +160,13 @@ Template.Trung.rendered = function() {
             .resizable({
               handles: "e, w",
               stop: this.handleResizeStop,
-              containment: $(".trung-table")
+              containment: $(".app-table")
             })
             .draggable({
               revert:true,
               revertDuration: 0,
               stop: this.handleDragStop,
-              containment: $(".trung-table")
+              containment: $(".app-table")
             });
       },
       handleDragStop(event, ui) {
@@ -270,7 +270,7 @@ Template.Trung.rendered = function() {
         return daysHtml;
     },
     render() {
-      return (<div className="trung-table">
+      return (<div className="app-table">
             <div className="day-axis">
                 <div className="empty-cell"></div>
                 {this.getDayAxis()}
@@ -285,7 +285,7 @@ Template.Trung.rendered = function() {
         </div>);
     }
   });
-  Trung = React.createClass({
+  App = React.createClass({
     getInitialState() {
         if (Timetables.find({owner: Cookie.get('userId')}).count() === 0) {
             Timetables.insert({
@@ -387,7 +387,7 @@ Template.Trung.rendered = function() {
     },
     render() {
       return (
-        <div className="trung">
+        <div className="app">
           <Timetable
             handleDrop={this.onItemDrop}
             handleDrag={this.onItemDrag}
@@ -400,5 +400,5 @@ Template.Trung.rendered = function() {
       );
     }
   });
-  ReactDOM.render(<Trung/>, document.getElementById("trung"));
+  ReactDOM.render(<App/>, document.getElementById("app"));
 };

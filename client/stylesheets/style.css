@@ -59,18 +59,18 @@ body {
     z-index: -100;
     display: inline-block;
 }
-.trung {
+.app {
     width: 100%;
 }
-.trung-table, .trung-list {
+.app-table, .app-list {
     float: left;
 }
-.trung-table {
+.app-table {
     min-width: 720px;
     height: 580px;
     width: 85%;
 }
-.trung-list {
+.app-list {
     margin-left: 1%;
     width: 14%;
     overflow-y: scroll;
