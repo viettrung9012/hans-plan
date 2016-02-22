@@ -1,7 +1,7 @@
 Template.Trung.rendered = function() {
   var width = $("#trung").width() * 0.85;
   if (width < 720) width = 720;
-  if (width > 1280) width = 1280;
+  if (width > 1640) width = 1640;
   var tableWidth = width - 20;
   var unitWidth = tableWidth / 14;
   var unitHeight = 80;
@@ -238,6 +238,25 @@ Template.Trung.rendered = function() {
         }]
       };
     },
+    /*
+    componentDidMount() {
+        var reminder = setInterval(function() {
+            var currentHour = new Date().getHours();
+            var currentMinute = new Date().getMinutes();
+            var currentDay = new Date().getDay() - 1;
+            currentDay = currentDay < 0 ? 6 : currentDay;
+
+            //if (currentMinute === 0) {
+                var hasSome = this.state.items.some(function(item) {
+                    return item.day === currentDay && item.hour === currentHour;
+                });
+                if (hasSome) {
+                    $("#player").dialog("open");
+                }
+            //}
+        }, 5000);
+    },
+    */
     onItemDrag(itemId, top, left) {
       var items = JSON.parse(JSON.stringify(this.state.items));
       var newItem;
