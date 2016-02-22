@@ -184,14 +184,16 @@ Template.Timetable.rendered = function() {
           this.props.onDelete(this.props.id);
       },
       render() {
+        var color = this.props.color ? this.props.color : "#fababa";
         return <div
                 className="item-block"
                 key={this.props.id}
                 data-id={this.props.id}
                 style={{top:this.props.posY + 'px',
                         left:this.props.posX + 'px',
+                        background: color,
                         width: this.props.width + 'px'}}>
-                {this.props.title}
+              {this.props.title}
                 <button className="item-delete-btn" onClick={this.selfDestruct}>&#10005;</button>
                 </div>;
       }
@@ -233,6 +235,7 @@ Template.Timetable.rendered = function() {
                     title={item.title}
                     posX={posX}
                     posY={posY}
+                    color={item.color}
                     onDrag={this.handleDrag}
                     onResize={this.handleResize}
                     onDelete={this.handleDelete}
@@ -355,13 +358,16 @@ Template.Timetable.rendered = function() {
     },
     onItemDrop(elem, top, left) {
         var items = JSON.parse(JSON.stringify(this.state.items));
+        var color = ["#1abc9c", "#2ecc71", "#3498db", "#9b59b6", "#f1c40f", "#e67e22", "#e74c3c", "#34495e", "#95a5a6"];
+
         var newItem = {
           id: ShortId.generate(),
           duration: 1,
           day: Math.round(parseFloat(top)/unitHeight),
           start: Math.round(parseFloat(left)/unitWidth),
           title: $(elem).find('span').text(),
-          playlistId: $(elem).data('playlistid')
+          playlistId: $(elem).data('playlistid'),
+          color: color[Math.floor((Math.random() * color.length))],
         };
         if (this.checkNotOverlap(newItem, items)) {
           items.push(newItem);
