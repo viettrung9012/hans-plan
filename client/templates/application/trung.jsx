@@ -16,8 +16,6 @@ Template.Trung.rendered = function() {
               autoOpen: false
             });
 
-
-
   SearchBar = React.createClass({
     handleSearch: function(e) {
       e.preventDefault();
@@ -42,6 +40,7 @@ Template.Trung.rendered = function() {
     componentDidMount() {
         $(ReactDOM.findDOMNode(this))
           .click(function(){
+              $("#player").dialog("open");
               var player;
               var playListId = "PLEpfh9jiEpYQJWMW2EF2PgCBhz2SQu6Ld";
               var onPlayerReady = function(event) {
@@ -58,7 +57,6 @@ Template.Trung.rendered = function() {
                       'onReady': onPlayerReady
                   }
               });
-              $("#player").dialog("open");
           })
           .draggable({
             helper: 'clone',
