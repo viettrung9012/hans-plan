@@ -135,7 +135,7 @@ Template.Trung.rendered = function() {
                 style={{top:this.props.posY + 'px',
                         left:this.props.posX + 'px',
                         width: this.props.width + 'px'}}>
-                {this.props.id}
+                {this.props.title}
                 </div>;
       }
   });
@@ -169,6 +169,7 @@ Template.Trung.rendered = function() {
                     unitWidth={unitWidth}
                     width={itemWidth}
                     id={item.id}
+                    title={item.title}
                     posX={posX}
                     posY={posY}
                     onDrag={this.handleDrag}
@@ -225,7 +226,13 @@ Template.Trung.rendered = function() {
   Trung = React.createClass({
     mixins: [ReactMeteorData],
     getMeteorData() {
-      return Timetables.findOne({});
+        if (Timetables.find({owner: Cookie.get('userId')}).count === 0) {
+            Timetables.insert({
+                owner: userId,
+                items: []
+            });
+        }
+        return Timetables.findOne({owner: Cookie.get('userId')});
     },
     onItemDrag(itemId, top, left) {
       var items = JSON.parse(JSON.stringify(this.data.items));
@@ -249,7 +256,7 @@ Template.Trung.rendered = function() {
             }
             return item;
           });
-          Timetables.update({owner: this.data.owner}, {$set:{items: newItems}});
+          Timetables.update(this.data._id, {$set:{items: newItems}});
         }
       }
     },
@@ -274,7 +281,7 @@ Template.Trung.rendered = function() {
                 }
                 return item;
               });
-              Timetables.update({owner: this.data.owner}, {$set:{items: newItems}});
+              Timetables.update(this.data._id, {$set:{items: newItems}});
           }
         }
     },
@@ -285,13 +292,12 @@ Template.Trung.rendered = function() {
           duration: 1,
           day: Math.round(parseFloat(top)/unitHeight),
           start: Math.round(parseFloat(left)/unitWidth),
-          title: $(elem).find('span').val(),
+          title: $(elem).find('span').text(),
           playlistId: $(elem).data('playlistid')
         };
-        console.log(newItem);
         if (this.checkNotOverlap(newItem, items)) {
           items.push(newItem);
-          Timetables.update({owner: this.data.owner}, {$set:{items: items}});
+          Timetables.update(this.data._id, {$set:{items: items}});
         }
     },
     checkNotOverlap(newItem, items) {
