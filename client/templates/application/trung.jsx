@@ -255,15 +255,18 @@ Template.Trung.rendered = function() {
     }
   });
   Trung = React.createClass({
-    mixins: [ReactMeteorData],
-    getMeteorData() {
+    getInitialState() {
         if (Timetables.find({owner: Cookie.get('userId')}).count() === 0) {
             Timetables.insert({
                 owner: Cookie.get('userId'),
                 items: []
             });
         }
-        return Timetables.findOne({owner: Cookie.get('userId')});
+        var doc = Timetables.findOne({owner: Cookie.get('userId')});
+        return {
+          id: doc._id,
+          items: doc.items
+        };
     },
     /*
     componentDidMount() {
@@ -285,7 +288,7 @@ Template.Trung.rendered = function() {
     },
     */
     onItemDrag(itemId, top, left) {
-      var items = JSON.parse(JSON.stringify(this.data.items));
+      var items = JSON.parse(JSON.stringify(this.state.items));
       var newItem;
 
       items = _.filter(items, function(item){
@@ -300,18 +303,19 @@ Template.Trung.rendered = function() {
         newItem.start = Math.round(parseFloat(left)/unitWidth);
 
         if (this.checkNotOverlap(newItem, items)) {
-          var newItems = _.map(this.data.items, function(item){
+          var newItems = _.map(this.state.items, function(item){
             if (item.id === newItem.id) {
               item = newItem;
             }
             return item;
           });
-          Timetables.update(this.data._id, {$set:{items: newItems}});
+          this.setState({items: newItems});
+          Timetables.update(this.state.id, {$set: {items: this.state.items}});
         }
       }
     },
     onItemResize(itemId, left, width) {
-        var items = JSON.parse(JSON.stringify(this.data.items));
+        var items = JSON.parse(JSON.stringify(this.state.items));
         var newItem;
 
         items = _.filter(items, function(item){
@@ -325,18 +329,20 @@ Template.Trung.rendered = function() {
           newItem.duration = Math.round(parseFloat(width)/unitWidth);
           if (newItem.duration === 0) newItem.duration = 1;
           if (this.checkNotOverlap(newItem, items)) {
-              var newItems = _.map(this.data.items, function(item){
+              var newItems = _.map(this.state.items, function(item){
                 if (item.id === newItem.id) {
                   item = newItem;
                 }
                 return item;
               });
-              Timetables.update(this.data._id, {$set:{items: newItems}});
+              this.setState({items: newItems});
+              console.log(this.state);
+              Timetables.update(this.state.id, {$set: {items: this.state.items}});
           }
         }
     },
     onItemDrop(elem, top, left) {
-        var items = JSON.parse(JSON.stringify(this.data.items));
+        var items = JSON.parse(JSON.stringify(this.state.items));
         var newItem = {
           id: ShortId.generate(),
           duration: 1,
@@ -347,15 +353,17 @@ Template.Trung.rendered = function() {
         };
         if (this.checkNotOverlap(newItem, items)) {
           items.push(newItem);
-          Timetables.update(this.data._id, {$set:{items: items}});
+          this.setState({items: items});
+          Timetables.update(this.state.id, {$set: {items: this.state.items}});
         }
     },
     onItemDelete(itemId) {
-        var items = JSON.parse(JSON.stringify(this.data.items));
+        var items = JSON.parse(JSON.stringify(this.state.items));
         var newItems = _.filter(items, function(item){
           return item.id !== itemId;
         });
-        Timetables.update(this.data._id, {$set: {items: newItems}});
+        this.setState({items: newItems});
+        Timetables.update(this.state.id, {$set: {items: this.state.items}});
     },
     checkNotOverlap(newItem, items) {
       return !(_.some(items, function(item){
@@ -373,7 +381,7 @@ Template.Trung.rendered = function() {
             handleDrag={this.onItemDrag}
             handleResize={this.onItemResize}
             handleDelete={this.onItemDelete}
-            items={this.data.items}
+            items={this.state.items}
             />
           <List/>
         </div>
