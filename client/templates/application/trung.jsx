@@ -1,14 +1,31 @@
 Template.Trung.rendered = function() {
   var width = $("#trung").width() * 0.85;
   if (width < 720) width = 720;
-  if (width > 1280) width = 1280;
+  if (width > 1640) width = 1640;
   var tableWidth = width - 20;
   var unitWidth = tableWidth / 14;
   var unitHeight = 80;
+
+  var tag = document.createElement('script');
+  tag.src = "https://www.youtube.com/iframe_api";
+  var firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+  var player;
+  function onYouTubeIframeAPIReady() {
+      player = new YT.Player('player', {
+          height: '390',
+          width: '640'
+      });
+  }
+
   $("#player")
     .dialog({
               autoOpen: false
             });
+
+
+
   SearchBar = React.createClass({
     handleSearch: function(e) {
       e.preventDefault();
@@ -34,6 +51,7 @@ Template.Trung.rendered = function() {
         $(ReactDOM.findDOMNode(this))
           .click(function(){
             $("#player").dialog("open");
+            player.loadPlaylist("PLEpfh9jiEpYQJWMW2EF2PgCBhz2SQu6Ld");
           })
           .draggable({
             helper: 'clone',
@@ -234,9 +252,6 @@ Template.Trung.rendered = function() {
   Trung = React.createClass({
     mixins: [ReactMeteorData],
     getMeteorData() {
-        if (!Cookie.get('userId')) {
-            Cookie.set('userId', uuid.v4(), {days: 30});
-        }
         if (Timetables.find({owner: Cookie.get('userId')}).count() === 0) {
             Timetables.insert({
                 owner: Cookie.get('userId'),
@@ -245,6 +260,25 @@ Template.Trung.rendered = function() {
         }
         return Timetables.findOne({owner: Cookie.get('userId')});
     },
+    /*
+    componentDidMount() {
+        var reminder = setInterval(function() {
+            var currentHour = new Date().getHours();
+            var currentMinute = new Date().getMinutes();
+            var currentDay = new Date().getDay() - 1;
+            currentDay = currentDay < 0 ? 6 : currentDay;
+
+            //if (currentMinute === 0) {
+                var hasSome = this.state.items.some(function(item) {
+                    return item.day === currentDay && item.hour === currentHour;
+                });
+                if (hasSome) {
+                    $("#player").dialog("open");
+                }
+            //}
+        }, 5000);
+    },
+    */
     onItemDrag(itemId, top, left) {
       var items = JSON.parse(JSON.stringify(this.data.items));
       var newItem;
