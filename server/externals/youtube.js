@@ -7,6 +7,7 @@ Meteor.methods({
         'part': 'snippet',
         'q': str,
         'type': 'playlist',
+        'maxResults': 20,
         'key': GoogleAPI.serverKey
       }
     });
