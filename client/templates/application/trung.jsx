@@ -280,15 +280,18 @@ Template.Trung.rendered = function() {
     },
     onItemDrop(elem, top, left) {
         var items = JSON.parse(JSON.stringify(this.data.items));
+        console.log(elem);
         var newItem = {
           id: ShortId.generate(),
           duration: 1,
           day: Math.round(parseFloat(top)/unitHeight),
-          start: Math.round(parseFloat(left)/unitWidth)
+          start: Math.round(parseFloat(left)/unitWidth),
+          title: '',
+          playlistId: ''
         };
         if (this.checkNotOverlap(newItem, items)) {
           items.push(newItem);
-          Timetables.update({owner: this.data.owner}, {$set:{items: newItems}});
+          Timetables.update({owner: this.data.owner}, {$set:{items: items}});
         }
     },
     checkNotOverlap(newItem, items) {
