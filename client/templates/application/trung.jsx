@@ -13,8 +13,15 @@ Template.Trung.rendered = function() {
 
   $("#player")
     .dialog({
-              autoOpen: false
-            });
+        autoOpen: false,
+        modal: true,
+        open: function(event, ui) {
+          $(this).append('<div id="player-frame"></div>');
+        },
+        close: function(event, ui) {
+          $('#player-frame').remove();
+        }
+      });
 
   SearchBar = React.createClass({
     handleSearch: function(e) {
@@ -38,15 +45,16 @@ Template.Trung.rendered = function() {
   });
   ListItem = React.createClass({
     componentDidMount() {
+        var self = this;
         $(ReactDOM.findDOMNode(this))
           .click(function(){
               $("#player").dialog("open");
               var player;
-              var playListId = "PLEpfh9jiEpYQJWMW2EF2PgCBhz2SQu6Ld";
+              var playListId = self.props.id;
               var onPlayerReady = function(event) {
                   event.target.playVideo();
               }
-              var player = new YT.Player('player', {
+              var player = new YT.Player('player-frame', {
                   height: '390',
                   width: '640',
                   playerVars: {
@@ -126,7 +134,27 @@ Template.Trung.rendered = function() {
   });
   TimetableItem = React.createClass ({
       componentDidMount() {
+          var self = this;
           $(ReactDOM.findDOMNode(this))
+            .click(function(){
+                $("#player").dialog("open");
+                var player;
+                var playListId = self.props.playlistId;
+                var onPlayerReady = function(event) {
+                    event.target.playVideo();
+                }
+                var player = new YT.Player('player-frame', {
+                    height: '390',
+                    width: '640',
+                    playerVars: {
+                     listType:'playlist',
+                     list: playListId
+                    },
+                    events: {
+                        'onReady': onPlayerReady
+                    }
+                });
+            })
             .resizable({
               handles: "e, w",
               stop: this.handleResizeStop,
@@ -199,6 +227,7 @@ Template.Trung.rendered = function() {
                     unitWidth={unitWidth}
                     width={itemWidth}
                     id={item.id}
+                    playlistId={item.playlistId}
                     title={item.title}
                     posX={posX}
                     posY={posY}
@@ -268,25 +297,6 @@ Template.Trung.rendered = function() {
           items: doc.items
         };
     },
-    /*
-    componentDidMount() {
-        var reminder = setInterval(function() {
-            var currentHour = new Date().getHours();
-            var currentMinute = new Date().getMinutes();
-            var currentDay = new Date().getDay() - 1;
-            currentDay = currentDay < 0 ? 6 : currentDay;
-
-            //if (currentMinute === 0) {
-                var hasSome = this.state.items.some(function(item) {
-                    return item.day === currentDay && item.hour === currentHour;
-                });
-                if (hasSome) {
-                    $("#player").dialog("open");
-                }
-            //}
-        }, 5000);
-    },
-    */
     onItemDrag(itemId, top, left) {
       var items = JSON.parse(JSON.stringify(this.state.items));
       var newItem;
