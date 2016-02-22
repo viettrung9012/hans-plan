@@ -27,7 +27,6 @@ body {
     height: 20px;
 }
 .table-right {
-    //max-width:1480px;
     display:table-cell;
 }
 #timetable-item-container {
@@ -39,6 +38,8 @@ body {
     display: inline-block;
     height: 80px;
     position: absolute;
+    -webkit-transition-timing-function: linear; /* Safari and Chrome */
+    transition-timing-function: linear;
 }
 #horizontal-wrapper, #vertical-wrapper {
     position: absolute;
@@ -66,7 +67,6 @@ body {
 }
 .trung-table {
     min-width: 720px;
-    //max-width: 1280px;
     height: 580px;
     width: 85%;
 }
