@@ -184,7 +184,7 @@ Template.Timetable.rendered = function() {
           this.props.onDelete(this.props.id);
       },
       render() {
-        var color = this.props.color ? this.props.color : "#fababa";
+        var color = this.props.color ? this.props.color : "#2c3e50";
         return <div
                 className="item-block"
                 key={this.props.id}

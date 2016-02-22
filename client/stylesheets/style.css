@@ -34,12 +34,12 @@ body {
     position: relative;
 }
 .item-block {
-    background-color: #fababa;
-    display: inline-block;
     height: 80px;
     position: absolute;
-    -webkit-transition-timing-function: linear; /* Safari and Chrome */
-    transition-timing-function: linear;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 #horizontal-wrapper, #vertical-wrapper {
     position: absolute;
