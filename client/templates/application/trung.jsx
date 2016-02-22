@@ -226,7 +226,7 @@ Template.Trung.rendered = function() {
   Trung = React.createClass({
     mixins: [ReactMeteorData],
     getMeteorData() {
-        if (Timetables.find({owner: Cookie.get('userId')}).count === 0) {
+        if (Timetables.find({owner: Cookie.get('userId')}).count() === 0) {
             Timetables.insert({
                 owner: userId,
                 items: []
