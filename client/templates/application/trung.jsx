@@ -13,6 +13,8 @@ Template.Trung.rendered = function() {
 
   $("#player")
     .dialog({
+        width: 1280,
+        height: 740,
         autoOpen: false,
         modal: true,
         open: function(event, ui) {
@@ -55,8 +57,8 @@ Template.Trung.rendered = function() {
                   event.target.playVideo();
               }
               var player = new YT.Player('player-frame', {
-                  height: '390',
-                  width: '640',
+                  width: '1280',
+                  height: '720',
                   playerVars: {
                    listType:'playlist',
                    list: playListId
@@ -144,8 +146,8 @@ Template.Trung.rendered = function() {
                     event.target.playVideo();
                 }
                 var player = new YT.Player('player-frame', {
-                    height: '390',
-                    width: '640',
+                    width: '1280',
+                    height: '720',
                     playerVars: {
                      listType:'playlist',
                      list: playListId
