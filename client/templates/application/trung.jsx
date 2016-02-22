@@ -127,6 +127,9 @@ Template.Trung.rendered = function() {
           var {width, height} = ui.size;
           this.props.onResize(this.props.id, left, width);
       },
+      selfDestruct() {
+          this.props.onDelete(this.props.id);
+      },
       render() {
         return <div
                 className="item-block"
@@ -136,6 +139,7 @@ Template.Trung.rendered = function() {
                         left:this.props.posX + 'px',
                         width: this.props.width + 'px'}}>
                 {this.props.title}
+                <button className="item-delete-btn" onClick={this.selfDestruct}>&#10005;</button>
                 </div>;
       }
   });
@@ -159,6 +163,9 @@ Template.Trung.rendered = function() {
     handleResize(itemId, left, width) {
       this.props.handleResize(itemId, left, width);
     },
+    handleDelete(itemId) {
+      this.props.handleDelete(itemId);
+    },
     renderItems() {
         return this.props.items.map((item) => {
             var itemWidth = unitWidth * item.duration;
@@ -174,6 +181,7 @@ Template.Trung.rendered = function() {
                     posY={posY}
                     onDrag={this.handleDrag}
                     onResize={this.handleResize}
+                    onDelete={this.handleDelete}
                   />;
         });
     },
@@ -226,9 +234,12 @@ Template.Trung.rendered = function() {
   Trung = React.createClass({
     mixins: [ReactMeteorData],
     getMeteorData() {
-        if (Timetables.find({owner: Cookie.get('userId')}).count === 0) {
+        if (!Cookie.get('userId')) {
+            Cookie.set('userId', uuid.v4(), {days: 30});
+        }
+        if (Timetables.find({owner: Cookie.get('userId')}).count() === 0) {
             Timetables.insert({
-                owner: userId,
+                owner: Cookie.get('userId'),
                 items: []
             });
         }
@@ -300,6 +311,13 @@ Template.Trung.rendered = function() {
           Timetables.update(this.data._id, {$set:{items: items}});
         }
     },
+    onItemDelete(itemId) {
+        var items = JSON.parse(JSON.stringify(this.data.items));
+        var newItems = _.filter(items, function(item){
+          return item.id !== itemId;
+        });
+        Timetables.update(this.data._id, {$set: {items: newItems}});
+    },
     checkNotOverlap(newItem, items) {
       return !(_.some(items, function(item){
           var newEnd = newItem.start + newItem.duration;
@@ -315,6 +333,7 @@ Template.Trung.rendered = function() {
             handleDrop={this.onItemDrop}
             handleDrag={this.onItemDrag}
             handleResize={this.onItemResize}
+            handleDelete={this.onItemDelete}
             items={this.data.items}
             />
           <List/>

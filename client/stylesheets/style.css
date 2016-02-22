@@ -88,3 +88,11 @@ body {
 .list-item-image {
     width: 100%;
 }
+.item-delete-btn {
+    top: 0;
+    right: 0;
+    position: absolute;
+    border: 1px solid #d3d3d3;
+    background-color: #e6e6e6;
+    opacity: 0.5;
+}
