@@ -5,10 +5,27 @@ Template.Trung.rendered = function() {
   var tableWidth = width - 20;
   var unitWidth = tableWidth / 14;
   var unitHeight = 80;
+
+  var tag = document.createElement('script');
+  tag.src = "https://www.youtube.com/iframe_api";
+  var firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+  var player;
+  function onYouTubeIframeAPIReady() {
+      player = new YT.Player('player', {
+          height: '390',
+          width: '640'
+      });
+  }
+
   $("#player")
     .dialog({
               autoOpen: false
             });
+
+
+
   SearchBar = React.createClass({
     handleSearch: function(e) {
       e.preventDefault();
@@ -34,6 +51,7 @@ Template.Trung.rendered = function() {
         $(ReactDOM.findDOMNode(this))
           .click(function(){
             $("#player").dialog("open");
+            player.loadPlaylist("PLEpfh9jiEpYQJWMW2EF2PgCBhz2SQu6Ld");
           })
           .draggable({
             helper: 'clone',
