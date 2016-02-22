@@ -11,14 +11,6 @@ Template.Trung.rendered = function() {
   var firstScriptTag = document.getElementsByTagName('script')[0];
   firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-  var player;
-  function onYouTubeIframeAPIReady() {
-      player = new YT.Player('player', {
-          height: '390',
-          width: '640'
-      });
-  }
-
   $("#player")
     .dialog({
               autoOpen: false
@@ -50,8 +42,23 @@ Template.Trung.rendered = function() {
     componentDidMount() {
         $(ReactDOM.findDOMNode(this))
           .click(function(){
-            $("#player").dialog("open");
-            player.loadPlaylist("PLEpfh9jiEpYQJWMW2EF2PgCBhz2SQu6Ld");
+              var player;
+              var playListId = "PLEpfh9jiEpYQJWMW2EF2PgCBhz2SQu6Ld";
+              var onPlayerReady = function(event) {
+                  event.target.playVideo();
+              }
+              var player = new YT.Player('player', {
+                  height: '390',
+                  width: '640',
+                  playerVars: {
+                   listType:'playlist',
+                   list: playListId
+                  },
+                  events: {
+                      'onReady': onPlayerReady
+                  }
+              });
+              $("#player").dialog("open");
           })
           .draggable({
             helper: 'clone',
